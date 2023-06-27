@@ -7,3 +7,4 @@ dist/**
 *.h5
 *.edf
 *.set
+*.asv

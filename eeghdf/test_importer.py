@@ -1,7 +1,6 @@
 from .importer import get_epochs
-file_path = "./resources/sample.set"
+file_path = "./matlab/test.set"
 
-#TODO: Replace with test data that can be made public.
 def test_get_epochs():
-    assert (80,62,1000) == get_epochs(file_path,["x"]).shape
-    assert (80,62,1000) == get_epochs(file_path,None).shape
+    assert (43,64,500) == get_epochs(file_path,["left"]).shape
+    assert (80,64,500) == get_epochs(file_path,None).shape
