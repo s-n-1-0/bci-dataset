@@ -19,12 +19,12 @@ class EEGHDFUpdater(HDFController):
                     dataset.attrs["label"] = label
             self.update_hdf(update_hdf)
     
-    def preprocess(self,each_func:Callable[[np.ndarray],np.ndarray]): 
+    def preprocess(self,group_name:str,each_func:Callable[[np.ndarray],np.ndarray]): 
             def update_hdf(h5:h5py.File):
                 dataset_count = h5["origin"].attrs["count"]
-                if "custom" in h5:
-                    del h5["custom"]
-                custom_group = h5.require_group("custom")
+                if group_name in h5:
+                    del h5[group_name]
+                custom_group = h5.require_group(group_name)
                 custom_group.attrs["fs"] = self.fs
                 for i in range(dataset_count):
                     orix = h5[f"origin/{i}"]

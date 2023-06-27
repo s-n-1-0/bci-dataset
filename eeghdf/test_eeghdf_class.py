@@ -19,17 +19,18 @@ def test_add_eeglab():
 def test_prepro():
     reset_file()
     fs = 500
+    group_name ="test2355"
     ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
     def prepro_func(x:np.ndarray):
          return np.ones((2,x.shape[1]))
     ehf.add_eeglab("./matlab/test.set")
-    ehf.preprocess(prepro_func)
+    ehf.preprocess(group_name,prepro_func)
 
     with h5py.File(fpath) as h5:
-        assert h5["custom"].attrs["fs"] == fs
-        assert h5["custom"].attrs["count"] == 80
-        assert np.all(h5["custom/79"][()] == np.ones((2,500)))
-        assert h5["custom/79"].attrs["label"] == "right"
+        assert h5[group_name].attrs["fs"] == fs
+        assert h5[group_name].attrs["count"] == 80
+        assert np.all(h5[f"{group_name}/79"][()] == np.ones((2,500)))
+        assert h5[f"{group_name}/79"].attrs["label"] == "right"
 def reset_file():
     if(os.path.isfile(fpath)):
             os.remove(fpath)
