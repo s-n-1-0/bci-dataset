@@ -16,13 +16,14 @@ def test_add_eeglab():
         assert h5["origin/79"].shape == (62,1000)
         assert h5["origin/79"].attrs["label"] == "x"
 
-def test_add_eeglab_prepro_option():
+def test_prepro():
     reset_file()
     fs = 250
     ehf = EEGHDFUpdater(fpath,fs=fs,lables=["x"])
-    def prepro_func(x:np):
+    def prepro_func(x:np.ndarray):
          return np.ones((2,x.shape[1]))
-    ehf.add_eeglab("./resources/sample.set",preprocess_func=prepro_func)
+    ehf.add_eeglab("./resources/sample.set")
+    ehf.preprocess(prepro_func)
 
     with h5py.File(fpath) as h5:
         assert h5["custom"].attrs["fs"] == fs
