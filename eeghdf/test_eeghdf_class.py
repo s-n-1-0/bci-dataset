@@ -16,7 +16,7 @@ def test_add_eeglab():
         assert h5["origin/79"].shape == (64,500)
         assert h5["origin/79"].attrs["label"] == "right"
     ehf.remove_hdf()
-    
+
 def test_prepro():
     fs = 500
     group_name ="test2355"
@@ -29,9 +29,9 @@ def test_prepro():
     ehf.preprocess(group_name,prepro_func)
 
     with h5py.File(fpath) as h5:
-        assert h5[group_name].attrs["fs"] == fs
-        assert h5[group_name].attrs["count"] == 80
-        assert np.all(h5[f"{group_name}/79"][()] == np.ones((2,500)))
-        assert h5[f"{group_name}/79"].attrs["label"] == "right"
+        assert h5["prepro/"+group_name].attrs["fs"] == fs
+        assert h5["prepro/"+group_name].attrs["count"] == 80
+        assert np.all(h5[f"prepro/{group_name}/79"][()] == np.ones((2,500)))
+        assert h5[f"prepro/{group_name}/79"].attrs["label"] == "right"
     
     ehf.remove_hdf()

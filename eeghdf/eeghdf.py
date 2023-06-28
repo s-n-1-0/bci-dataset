@@ -24,7 +24,7 @@ class EEGHDFUpdater(HDFController):
                 dataset_count = h5["origin"].attrs["count"]
                 if group_name in h5:
                     del h5[group_name]
-                custom_group = h5.require_group(group_name)
+                custom_group = h5.require_group("prepro/" + group_name)
                 custom_group.attrs["fs"] = self.fs
                 for i in range(dataset_count):
                     orix = h5[f"origin/{i}"]
