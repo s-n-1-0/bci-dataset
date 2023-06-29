@@ -22,8 +22,8 @@ class EEGHDFUpdater(HDFController):
     def preprocess(self,group_name:str,each_func:Callable[[np.ndarray],np.ndarray]): 
             def update_hdf(h5:h5py.File):
                 dataset_count = h5["origin"].attrs["count"]
-                if group_name in h5:
-                    del h5[group_name]
+                if "prepro" in h5 and group_name in h5["prepro"]:
+                    del h5["prepro/" + group_name]
                 custom_group = h5.require_group("prepro/" + group_name)
                 custom_group.attrs["fs"] = self.fs
                 for i in range(dataset_count):
