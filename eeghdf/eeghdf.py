@@ -22,6 +22,29 @@ class EEGHDFUpdater(HDFController):
                             dataset.attrs[key] = dataset_attrs[key]
             self.update_hdf(update_hdf)
     
+    def add_numpy(self,data:np.ndarray,
+                trial_indexes:list[int],
+                trial_labels:list[str],
+                sample_size:int,
+                dataset_attrs:Optional[Dict[str,Any]] = None):
+        """
+        params:
+            data:shape(channels,samples)
+            trial_indexes:index array of when each trial started
+            trial_labels: label array of each trial
+            sample_size: Sample size for 1 trial (fs*time)
+        """
+        def update_hdf(h5:h5py.File):
+            origin_group = h5.require_group("origin")
+            origin_group.attrs["fs"] = self.fs
+            for i,label in zip(trial_indexes,trial_labels):
+                dataset = self.increment_dataset(origin_group,data[:,i:i+sample_size])
+                dataset.attrs["label"] = label
+                if dataset_attrs is not None:
+                    for key in dataset_attrs.keys():
+                        dataset.attrs[key] = dataset_attrs[key]
+        self.update_hdf(update_hdf)
+    
     def preprocess(self,group_name:str,each_func:Callable[[np.ndarray],np.ndarray]): 
             def update_hdf(h5:h5py.File):
                 origin_group = h5["origin"]
