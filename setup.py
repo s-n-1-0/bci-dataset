@@ -1,5 +1,5 @@
 from setuptools import setup
-import labedf
+import eeghdf
 with open('README.md', 'r', encoding='utf-8') as fp:
     readme = fp.read()
 LONG_DESCRIPTION = readme
@@ -9,7 +9,7 @@ setup(
     author="sn-10",
     url="https://github.com/s-n-1-0/eeghdf",
     download_url="https://github.com/s-n-1-0/eeghdf",
-    version=labedf.__version__,
+    version=eeghdf.__version__,
     description="Building HDF datasets for machine learning.",
     install_requires=[
         "numpy>=1.22.4",
