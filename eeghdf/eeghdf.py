@@ -1,13 +1,14 @@
 import h5py
 import numpy as np
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 from .importer import get_epochs
 from .hdf_controller import HDFController
 class EEGHDFUpdater(HDFController):
-    def __init__(self,hdf_path:str,fs,lables) -> None:
+    def __init__(self,hdf_path:str,fs:int,lables:List[str],dataset_name:str = "") -> None:
         super().__init__(hdf_path)
         self.fs = fs
         self.labels = lables
+        self.dataset_name = dataset_name
     def add_eeglab(self,input_path:str,dataset_attrs:Optional[Dict[str,Any]] = None):
         for label in self.labels:
             epochs = get_epochs(input_path,label)
@@ -43,6 +44,33 @@ class EEGHDFUpdater(HDFController):
                 if dataset_attrs is not None:
                     for key in dataset_attrs.keys():
                         dataset.attrs[key] = dataset_attrs[key]
+        self.update_hdf(update_hdf)
+    
+    def merge_hdf(self,source:Type["EEGHDFUpdater"],ch_indexes:Optional[List[int]] = None):
+        """
+        Merge "origin" group of source hdf into this HDF
+        params:
+            source : HDFController
+            ch_indexes : When specifying the index of channels to merge.
+                default : None (All channels)
+        """
+        assert self.fs == source.fs
+        assert source.dataset_name != "" , "source.dataset_name is empty"
+
+        def update_hdf(target_h5:h5py.File):
+            origin_group = target_h5.require_group("origin")
+            origin_group.attrs["fs"] = self.fs
+            with h5py.File(source.hdf_path,mode="r") as source_h5:
+                counts = source_h5["origin"].attrs["count"]
+                for i in range(counts):
+                    source_dataset = source_h5["origin"][f"{i}"]
+                    data = source_dataset[()]
+                    if ch_indexes is not None:
+                        data = data[ch_indexes,:]
+                    dataset = self.increment_dataset(origin_group,data)
+                    for key in source_dataset.attrs.keys():
+                        dataset.attrs[key] = source_dataset.attrs[key]
+                    dataset.attrs["dataset"] = source.dataset_name
         self.update_hdf(update_hdf)
     
     def preprocess(self,group_name:str,each_func:Callable[[np.ndarray],np.ndarray]): 

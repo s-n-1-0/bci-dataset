@@ -77,3 +77,34 @@ def test_add_raw():
         assert h5["origin/5"].shape == (12,dummy_size)
         assert h5["origin/5"].attrs["label"] == "right"
     ehf.remove_hdf()
+
+#Merges datasets
+def test_merge_hdf():
+    tpath = "test3.h5"
+    s1 = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"],dataset_name="source1")
+    s2 = EEGHDFUpdater("test2.h5",fs=fs,lables=["left","right"],dataset_name="source2")
+    target = EEGHDFUpdater(tpath,fs=fs,lables=["left","right"])
+    s1.remove_hdf()
+    s2.remove_hdf()
+    target.remove_hdf()
+
+    dummy_ch_indexes = [1,5,3,10,8,9] # random
+    dummy_indexes = [0,1000,2000,3000,4000,5000]
+    dummy_labels = ["left","right"]*3
+    dummy_size = 990
+    dummy_s1_data = np.array([[i] * 6000 for i in range(12)])
+    dummy_s2_data = np.array([[i] * 6000 for i in dummy_ch_indexes]) 
+    s1.add_numpy(dummy_s1_data,dummy_indexes,dummy_labels,dummy_size)
+    s2.add_numpy(dummy_s2_data,dummy_indexes,dummy_labels,dummy_size)
+    target.merge_hdf(s1,ch_indexes=dummy_ch_indexes)
+    target.merge_hdf(s2)
+
+    with h5py.File(tpath,mode="r") as h5:
+        assert h5["origin/1"].attrs["dataset"] == "source1"
+        assert h5["origin/6"].attrs["dataset"] == "source2"
+        assert h5["origin/1"][()].shape[0] == len(dummy_ch_indexes)
+        assert np.allclose(h5["origin/1"][()],h5["origin/6"][()])
+
+    s1.remove_hdf()
+    s2.remove_hdf()
+    target.remove_hdf()

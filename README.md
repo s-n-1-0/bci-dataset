@@ -7,6 +7,7 @@ pip install git+https://github.com/s-n-1-0/eeghdf.git
 `
 
 ## How to Use
+### Add EEG Data
 ```python
 import eeghdf
 import numpy as np
@@ -69,3 +70,19 @@ hdf file
         dataset79 = h5["prepro/custom/79"][()] #ch × samples
         dataset79_label = h5["prepro/custom/79"].attrs["label"]
     ```
+
+### Merge HDF Dataset
+In order to merge, "dataset_name" must be set.  
+If the order of channels is different for each dataset, the order can be aligned by specifying ch_indexes.
+
+Example: Merge source1 and source2 datasets
+```python
+    labels = ["left","right"]
+    target = EEGHDFUpdater("new_dataset.h5",fs=fs,lables=labels)
+    target.remove_hdf() # reset hdf
+    s1 = EEGHDFUpdater("source1.h5",fs=fs,lables=labels,dataset_name="source1")
+    s2 = EEGHDFUpdater("source2.h5",fs=fs,lables=labels,dataset_name="source2")
+    s1_ch_indexes = [1,60,10,5]# channel indexes
+    target.merge_hdf(s1,ch_indexes=s1_ch_indexes)
+    target.merge_hdf(s2)
+```
