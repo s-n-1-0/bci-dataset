@@ -4,13 +4,13 @@ from typing import Any, Callable, Dict, List, Optional, Type
 from .importer import get_epochs
 from .hdf_controller import HDFController
 class EEGHDFUpdater(HDFController):
-    def __init__(self,hdf_path:str,fs:int,lables:List[str],dataset_name:str = "") -> None:
+    def __init__(self,hdf_path:str,fs:int,dataset_name:str = "") -> None:
         super().__init__(hdf_path)
         self.fs = fs
-        self.labels = lables
+
         self.dataset_name = dataset_name
-    def add_eeglab(self,input_path:str,dataset_attrs:Optional[Dict[str,Any]] = None):
-        for label in self.labels:
+    def add_eeglab(self,input_path:str,labels:List[str],dataset_attrs:Optional[Dict[str,Any]] = None):
+        for label in labels:
             epochs = get_epochs(input_path,label)
             def update_hdf(h5:h5py.File):
                 origin_group = h5.require_group("origin")

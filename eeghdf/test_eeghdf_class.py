@@ -5,9 +5,9 @@ from . import EEGHDFUpdater
 fpath = "test.h5"
 fs = 500
 def test_add_eeglab():
-    ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
+    ehf = EEGHDFUpdater(fpath,fs=fs)
     ehf.remove_hdf()
-    ehf.add_eeglab("./matlab/test.set")
+    ehf.add_eeglab("./matlab/test.set",["left","right"])
 
     with h5py.File(fpath) as h5:
         assert h5["origin"].attrs["fs"] == fs
@@ -17,9 +17,9 @@ def test_add_eeglab():
     ehf.remove_hdf()
 
 def test_add_eeglab_attrs_option():
-    ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
+    ehf = EEGHDFUpdater(fpath,fs=fs)
     ehf.remove_hdf()
-    ehf.add_eeglab("./matlab/test.set",{"test":1,"test2":"hello"})
+    ehf.add_eeglab("./matlab/test.set",["left","right"],{"test":1,"test2":"hello"})
 
     with h5py.File(fpath) as h5:
         assert h5["origin/79"].attrs["label"] == "right"
@@ -29,12 +29,12 @@ def test_add_eeglab_attrs_option():
 
 def test_prepro():
     group_name ="test2355"
-    ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
+    ehf = EEGHDFUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     
     def prepro_func(x:np.ndarray):
          return np.ones((2,x.shape[1]))
-    ehf.add_eeglab("./matlab/test.set")
+    ehf.add_eeglab("./matlab/test.set",["left","right"])
     ehf.preprocess(group_name,prepro_func)
 
     with h5py.File(fpath) as h5:
@@ -47,12 +47,12 @@ def test_prepro():
 
 def test_prepro_overwrite_case():
     group_name ="test2355"
-    ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
+    ehf = EEGHDFUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     
     def prepro_func(x:np.ndarray):
          return np.ones((2,x.shape[1]))
-    ehf.add_eeglab("./matlab/test.set")
+    ehf.add_eeglab("./matlab/test.set",["left","right"])
     ehf.preprocess(group_name,prepro_func)
     ehf.preprocess(group_name,prepro_func) #overwrite
     
@@ -62,7 +62,7 @@ def test_prepro_overwrite_case():
     ehf.remove_hdf()
 
 def test_add_raw():
-    ehf = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"])
+    ehf = EEGHDFUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     dummy_data = np.ones((12,6000))
     dummy_indexes = [0,1000,2000,3000,4000,5000]
@@ -81,9 +81,9 @@ def test_add_raw():
 #Merges datasets
 def test_merge_hdf():
     tpath = "test3.h5"
-    s1 = EEGHDFUpdater(fpath,fs=fs,lables=["left","right"],dataset_name="source1")
-    s2 = EEGHDFUpdater("test2.h5",fs=fs,lables=["left","right"],dataset_name="source2")
-    target = EEGHDFUpdater(tpath,fs=fs,lables=["left","right"])
+    s1 = EEGHDFUpdater(fpath,fs=fs,dataset_name="source1")
+    s2 = EEGHDFUpdater("test2.h5",fs=fs,dataset_name="source2")
+    target = EEGHDFUpdater(tpath,fs=fs)
     s1.remove_hdf()
     s2.remove_hdf()
     target.remove_hdf()

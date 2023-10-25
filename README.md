@@ -17,12 +17,12 @@ fs = 500 # sampling rate
 labels = ["left","right"]
 eeglab_list = ["./sample.set"] # path list of eeglab files
 
-ehf = EEGHDFUpdater(fpath,fs=fs,lables=labels)
+ehf = EEGHDFUpdater(fpath,fs=fs)
 ehf.remove_hdf() # delete hdf file
 
 # add eeglab(.set) files
 for fp in eeglab_list:
-    updater.add_eeglab(fp)
+    updater.add_eeglab(fp,labels)
 
 #------
 
