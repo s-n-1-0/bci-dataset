@@ -1,4 +1,4 @@
-# eeghdf
+# bci_dataset
 Python library for organizing multiple EEG datasets using HDF.  
 Support EEGLAB Data!
 
@@ -6,7 +6,7 @@ Support EEGLAB Data!
 
 ## Installation
 `
-pip install git+https://github.com/s-n-1-0/eeghdf.git
+pip install git+https://github.com/s-n-1-0/bci-dataset.git
 `
 
 ## How to Use
@@ -18,11 +18,11 @@ pip install git+https://github.com/s-n-1-0/eeghdf.git
 
 #### Commonality
 ```python
-import eeghdf
+import bci_dataset
 
 fpath = "./dataset.hdf"
 fs = 500 # sampling rate
-updater = EEGHDFUpdater(fpath,fs=fs)
+updater = DatasetUpdater(fpath,fs=fs)
 updater.remove_hdf() # delete hdf file that already exist
 ```
 #### Add EEGLAB Data
@@ -105,10 +105,10 @@ If the order of channels is different for each dataset, the order can be aligned
 
 Example: Merge source1 and source2 datasets
 ```python
-    target = EEGHDFUpdater("new_dataset.h5",fs=fs)
+    target = DatasetUpdater("new_dataset.h5",fs=fs)
     target.remove_hdf() # reset hdf
-    s1 = EEGHDFUpdater("source1.h5",fs=fs,dataset_name="source1")
-    s2 = EEGHDFUpdater("source2.h5",fs=fs,dataset_name="source2")
+    s1 = DatasetUpdater("source1.h5",fs=fs,dataset_name="source1")
+    s2 = DatasetUpdater("source2.h5",fs=fs,dataset_name="source2")
     s1_ch_indexes = [1,60,10,5]# channel indexes to use
     target.merge_hdf(s1,ch_indexes=s1_ch_indexes)
     target.merge_hdf(s2)

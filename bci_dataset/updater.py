@@ -3,7 +3,7 @@ import numpy as np
 from typing import Any, Callable, Dict, List, Optional, Type
 from .importer import get_epochs
 from .hdf_controller import HDFController
-class EEGHDFUpdater(HDFController):
+class DatasetUpdater(HDFController):
     def __init__(self,hdf_path:str,fs:int,dataset_name:str = "") -> None:
         super().__init__(hdf_path)
         self.fs = fs
@@ -46,7 +46,7 @@ class EEGHDFUpdater(HDFController):
                         dataset.attrs[key] = dataset_attrs[key]
         self.update_hdf(update_hdf)
     
-    def merge_hdf(self,source:Type["EEGHDFUpdater"],ch_indexes:Optional[List[int]] = None):
+    def merge_hdf(self,source:Type["DatasetUpdater"],ch_indexes:Optional[List[int]] = None):
         """
         Merge "origin" group of source hdf into this HDF
         params:

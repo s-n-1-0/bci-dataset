@@ -1,6 +1,6 @@
 {
     "python.testing.pytestArgs": [
-        "eeghdf"
+        "bci_dataset"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

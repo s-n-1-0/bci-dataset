@@ -1,11 +1,11 @@
 import os
 import h5py
 import numpy as np
-from . import EEGHDFUpdater
+from . import DatasetUpdater
 fpath = "test.h5"
 fs = 500
 def test_add_eeglab():
-    ehf = EEGHDFUpdater(fpath,fs=fs)
+    ehf = DatasetUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     ehf.add_eeglab("./matlab/test.set",["left","right"])
 
@@ -17,7 +17,7 @@ def test_add_eeglab():
     ehf.remove_hdf()
 
 def test_add_eeglab_attrs_option():
-    ehf = EEGHDFUpdater(fpath,fs=fs)
+    ehf = DatasetUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     ehf.add_eeglab("./matlab/test.set",["left","right"],{"test":1,"test2":"hello"})
 
@@ -29,7 +29,7 @@ def test_add_eeglab_attrs_option():
 
 def test_prepro():
     group_name ="test2355"
-    ehf = EEGHDFUpdater(fpath,fs=fs)
+    ehf = DatasetUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     
     def prepro_func(x:np.ndarray):
@@ -47,7 +47,7 @@ def test_prepro():
 
 def test_prepro_overwrite_case():
     group_name ="test2355"
-    ehf = EEGHDFUpdater(fpath,fs=fs)
+    ehf = DatasetUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     
     def prepro_func(x:np.ndarray):
@@ -62,7 +62,7 @@ def test_prepro_overwrite_case():
     ehf.remove_hdf()
 
 def test_add_raw():
-    ehf = EEGHDFUpdater(fpath,fs=fs)
+    ehf = DatasetUpdater(fpath,fs=fs)
     ehf.remove_hdf()
     dummy_data = np.ones((12,6000))
     dummy_indexes = [0,1000,2000,3000,4000,5000]
@@ -81,9 +81,9 @@ def test_add_raw():
 #Merges datasets
 def test_merge_hdf():
     tpath = "test3.h5"
-    s1 = EEGHDFUpdater(fpath,fs=fs,dataset_name="source1")
-    s2 = EEGHDFUpdater("test2.h5",fs=fs,dataset_name="source2")
-    target = EEGHDFUpdater(tpath,fs=fs)
+    s1 = DatasetUpdater(fpath,fs=fs,dataset_name="source1")
+    s2 = DatasetUpdater("test2.h5",fs=fs,dataset_name="source2")
+    target = DatasetUpdater(tpath,fs=fs)
     s1.remove_hdf()
     s2.remove_hdf()
     target.remove_hdf()
