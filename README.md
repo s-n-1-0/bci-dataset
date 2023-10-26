@@ -50,7 +50,7 @@ updater.add_numpy(dummy_data,dummy_indexes,dummy_labels,dummy_size)
 
 ```
 ### Apply Preprocessing
-The preprocess method overwrites the specified group each time it is executed.
+If the "preprocess" method is executed again with the same group name, the already created group with the specified name is deleted once before preprocessing.
 
 ```python
 """
@@ -97,7 +97,7 @@ hdf file
         dataset79_label = h5["prepro/custom/79"].attrs["label"]
     ```
 
-### Merge HDF Dataset
+### Merge Dataset
 In order to merge, "dataset_name" must be set.  
 If the order of channels is different for each dataset, the order can be aligned by specifying ch_indexes.
 
