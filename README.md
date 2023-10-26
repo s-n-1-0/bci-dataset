@@ -1,4 +1,4 @@
-# bci_dataset
+# bci-dataset
 Python library for organizing multiple EEG datasets using HDF.  
 Support EEGLAB Data!
 
@@ -6,7 +6,7 @@ Support EEGLAB Data!
 
 ## Installation
 `
-pip install git+https://github.com/s-n-1-0/bci-dataset.git
+pip install bci-dataset
 `
 
 ## How to Use
@@ -18,7 +18,7 @@ pip install git+https://github.com/s-n-1-0/bci-dataset.git
 
 #### Commonality
 ```python
-import bci_dataset
+from bci_dataset import DatasetUpdater
 
 fpath = "./dataset.hdf"
 fs = 500 # sampling rate
