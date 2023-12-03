@@ -18,3 +18,10 @@ class HDFController():
         counter = 0 if counter is None else counter
         group.attrs["count"] = counter + 1
         return group.create_dataset(f"{counter}",data.shape,data=data)
+
+    def get_in_order(self,group_path:str):
+        with h5py.File(self.hdf_path) as h5:
+            group = h5[group_path]
+            count = group.attrs["count"]
+            for i in range(count):
+                yield group[str(i)]

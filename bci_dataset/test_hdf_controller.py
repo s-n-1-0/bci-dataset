@@ -1,6 +1,6 @@
 from .hdf_controller import HDFController
+from .updater import DatasetUpdater
 import h5py
-import os
 import numpy as np
 fpath = "./ignore.h5"
 def test_update_dataset():
@@ -27,3 +27,12 @@ def test_increment_dataset():
         assert group["9"][()] == np.array([9])
     controller.update_hdf(update)
     controller.remove_hdf()
+
+#Check for sequential numbering
+def test_get_in_order():
+    ehf = DatasetUpdater(fpath,fs=500)
+    ehf.remove_hdf()
+    ehf.add_eeglab("./matlab/test.set",["left","right"])
+    for i,dataset in enumerate(ehf.get_in_order("origin")):
+        assert str(i) == dataset.name.split("/")[-1]
+    ehf.remove_hdf()
